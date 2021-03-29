@@ -1,0 +1,5 @@
+注意安装 jest-watch-typeahead 插件
+
+yarn jest --watch
+
+yarn jest --watch --all 总是重新测试所有
