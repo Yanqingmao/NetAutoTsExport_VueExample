@@ -1,4 +1,3 @@
-import { HongboTest } from "../src/auto/RouteUtil";
 import { Hongbo } from "../src/auto/RootControlInterfaces";
 import { expect, test, beforeEach } from "@jest/globals";
 const paramArray: Hongbo.IActionParameterDefine[] = [{
@@ -13,7 +12,7 @@ const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 beforeEach(() => {
     aspnetControlDefine.controlTypeName = "ValuesController";
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.AspNet;
-    aspnetControlDefine.controlType = Hongbo.EnumControlType.WebApi;
+    aspnetControlDefine.controlMode = Hongbo.EnumControlMode.WebApi;
 
     actionDefine.name = "Get";
     actionDefine.inParameterDefines = paramArray;

@@ -1,4 +1,3 @@
-import { HongboTest } from "../src/auto/RouteUtil";
 import { Hongbo } from "../src/auto/RootControlInterfaces";
 import { expect, test, beforeEach } from "@jest/globals";
 const paramArray: Hongbo.IActionParameterDefine[] = [{
@@ -13,7 +12,7 @@ const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 beforeEach(() => {
     aspnetControlDefine.controlTypeName = "ValuesController";
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.AspNet;
-    aspnetControlDefine.controlType = Hongbo.EnumControlType.Mvc;
+    aspnetControlDefine.controlMode = Hongbo.EnumControlMode.Mvc;
 
     actionDefine.name = "Get";
     actionDefine.inParameterDefines = paramArray;
@@ -21,7 +20,7 @@ beforeEach(() => {
 
 test("RouteUtil.calculateMvcUrl.Aspnet_Mvc_控制器_RouteArea_RoutePrefix_Route_指定参数", ()=> {
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.AspNet;
-    aspnetControlDefine.controlType = Hongbo.EnumControlType.Mvc;
+    aspnetControlDefine.controlMode = Hongbo.EnumControlMode.Mvc;
     aspnetControlDefine.routeDefine = {
         RouteAreaContent: "tr/{x}",
         RoutePrefixDefine: "tp",
@@ -33,7 +32,7 @@ test("RouteUtil.calculateMvcUrl.Aspnet_Mvc_控制器_RouteArea_RoutePrefix_Route
 
 test("RouteUtil.calculateMvcUrl.Aspnet_Mvc_控制器_RouteArea_RoutePrefix_Action指定Route_指定参数", ()=> {
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.AspNet;
-    aspnetControlDefine.controlType = Hongbo.EnumControlType.Mvc;
+    aspnetControlDefine.controlMode = Hongbo.EnumControlMode.Mvc;
     aspnetControlDefine.routeDefine = {
         RouteAreaContent: "tr/{x}",
         RoutePrefixDefine: "tp",
@@ -49,7 +48,7 @@ test("RouteUtil.calculateMvcUrl.Aspnet_Mvc_控制器_RouteArea_RoutePrefix_Actio
 
 test("RouteUtil.calculateMvcUrl.NetCore_Mvc_控制器_Control指定Route_Action指定Route_指定参数", ()=> {
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.NetCore;
-    aspnetControlDefine.controlType = Hongbo.EnumControlType.Mvc;
+    aspnetControlDefine.controlMode = Hongbo.EnumControlMode.Mvc;
     aspnetControlDefine.routeDefine = {
         RouteContent: "{controller}/{action}/{x}"
     };
@@ -63,7 +62,7 @@ test("RouteUtil.calculateMvcUrl.NetCore_Mvc_控制器_Control指定Route_Action�
 
 test("RouteUtil.calculateMvcUrl.NetCore_Mvc_控制器_Control指定Route_Action指定根Route_指定参数", ()=> {
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.NetCore;
-    aspnetControlDefine.controlType = Hongbo.EnumControlType.Mvc;
+    aspnetControlDefine.controlMode = Hongbo.EnumControlMode.Mvc;
     aspnetControlDefine.routeDefine = {
         RouteContent: "{controller}/{action}/{x}"
     };

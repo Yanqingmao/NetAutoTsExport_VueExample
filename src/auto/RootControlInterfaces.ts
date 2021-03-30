@@ -1,6 +1,7 @@
+import axios, { AxiosRequestConfig, Method } from "axios";
+import jquery from "jquery";
 
 export namespace Hongbo {
-
     /** rout define in control or action */
     export interface IRouteDefine {
         /** route define in control or action,
@@ -17,8 +18,19 @@ export namespace Hongbo {
         /** the ActionName in MVC action. */
         ActionNameContent?: string;
     }
+    /** how send request to server */
+    export enum EnumRequestMode {
+        /** Axios， https://github.com/axios/axios */
+        Axios = 0,
+        /** jQuery，https://jquery.com */
+        Jquery = 1,
+        /** Browser Fetch, https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch  */
+        Fetch = 2,
+        /** UniApp, see the https://uniapp.dcloud.io/ */
+        UniApp
+    }
     /** the control type enum */
-    export enum EnumControlType {
+    export enum EnumControlMode {
         /** WebApi controller */
         WebApi = 0,
         /** MVC controller, but only support the action which should return the Json result */
@@ -52,6 +64,7 @@ export namespace Hongbo {
         fromDefine?: IParameterFromDefine;
         value?: any;
         filledToRoute?: boolean;
+        filledToQuery?: boolean;
     }
     /** Action in one controller */
     export class HongboRootAction {
@@ -83,32 +96,192 @@ export namespace Hongbo {
     }
     /** RootController define, all control should extends from this implicit or explicit */
     export class HongboRootContol {
-        static DefaulMvctRoute: string = "{controller}/{action}/{id}";
+        /** the base url  */
+        static BaseUrl: string = "http://localhost";
+
+        /** the default MVC route, see the Startups.cs or RouteConfig.cs, if option, please assign the id?  */
+        static DefaulMvctRoute: string = "{controller}/{action}/{id?}";
+
+        /** the default MVC route, see the Startups.cs or WebApiConfig.cs, if option, please assign the id?  */
+        static DefaulWebapitRoute: string = "api/{controller}/{id}";
+
+        /** which library will be used to send request to server, default will use the fetch of in browser */
+        static DefaulRequestMode: EnumRequestMode = EnumRequestMode.Fetch;
 
         /** the type name of Controller */
         public controlTypeName: string = "";
 
-        /** .net environment  */
+        /** .net environment, default will be the .NetCore  */
         public environment: EnumEnvironment = EnumEnvironment.NetCore;
 
-        /** the type of Controller */
-        public controlType: EnumControlType = EnumControlType.WebApi;
+        /** the mode of Controller, default will be the WebApi */
+        public controlMode: EnumControlMode = EnumControlMode.WebApi;
 
-        /** ths route defined on Controller, maybe {}  */
+        /** ths route defined on Controller */
         public routeDefine?: IRouteDefine;
 
         /**
          * execute the action
          */
         callAction(actionDefine: HongboRootAction): Promise<any> {
-            /*let params = actionDefine.inParameterDefines;
-            let url = "";
-            if (this.controlType === EnumControlType.Mvc) {
-                this.callAspNetMvcAction(actionDefine);
-            }*/
+            let url: string = "";
+            if (this.controlMode === EnumControlMode.Mvc) { url = RouteUtil.calculateMvcUrl(this, actionDefine); } else
+            if (this.controlMode === EnumControlMode.WebApi) { url = RouteUtil.calculateWebApiUrl(this, actionDefine); } else {
+                throw "We're sorry, the signalR will supported soon.";
+            }
+            if (HongboRootContol.BaseUrl.endsWith("/") || url.startsWith("/")) {
+                url = HongboRootContol.BaseUrl + url;
+            } else {
+               url = HongboRootContol.BaseUrl + "/" + url;
+            }
+            let content: IMethodBodyHeader = ContentUtil.calculateMethodBodyHead(this, actionDefine);
+            if (HongboRootContol.DefaulRequestMode === EnumRequestMode.Fetch) {
+                return this.requestWithFetch(url, content);
+            }
+            if (HongboRootContol.DefaulRequestMode === EnumRequestMode.Axios) {
+                return this.requestWithAxios(url, content);
+            }
+            if (HongboRootContol.DefaulRequestMode === EnumRequestMode.Jquery) {
+                return this.requestWithJquery(url, content);
+            }
+            if (HongboRootContol.DefaulRequestMode === EnumRequestMode.UniApp) {
+                return this.requestWithUniapp(url, content);
+            }
             return {} as any;
         }
-
+        private requestWithFetch(url: string, content: IMethodBodyHeader): Promise<any> {
+            return fetch(url, {
+                method: content.method,
+                headers: content.headers,
+                body: content.body
+            });
+        }
+        private requestWithAxios(url: string, content: IMethodBodyHeader): Promise<any> {
+            let axiosConfig: AxiosRequestConfig = {
+                method: content.method as Method,
+                url: url,
+                headers: content.headers,
+                data: content.body
+            };
+            return axios.request(axiosConfig);
+        }
+        private requestWithJquery(url: string, content: IMethodBodyHeader): Promise<any> {
+            let jqueryConfig: JQuery.AjaxSettings = {
+                type: content.method,
+                url: url,
+                headers: content.headers,
+                data: content.body
+            };
+            let jqXHR: JQuery.jqXHR = jquery.ajax(jqueryConfig);
+            return (jqXHR.promise() as any) as Promise<any>;
+        }
+        private requestWithUniapp(url: string, content: IMethodBodyHeader): Promise<any> {
+            let uniRequest: UniApp.RequestOptions = {
+                method: content.method as  "OPTIONS" | "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT",
+                url: url,
+                header: content.headers,
+                data: content.body,
+                dataType: "json"
+            };
+            return (uni.request(uniRequest) as any) as Promise<any>;
+        }
+    }
+    /**
+     * Http 的 Method、Body、Header
+     */
+    export interface IMethodBodyHeader {
+        method: string;
+        body?: FormData | string;
+        headers: Record<string, string>;
+    }
+    /** 根据 ControlDefine 和 ActionDefine 获取 Http Header 定义的工具类 */
+    export class ContentUtil {
+        /**
+         * 根据 ControlDefine 和 ActionDefine 计算 Http Header
+         * @returns Record<string, string>
+         */
+        static calculateMethodBodyHead(controlDefine: HongboRootContol, actionDefine: HongboRootAction): IMethodBodyHeader {
+            let method: string = ContentUtil.calculateMethod(controlDefine, actionDefine);
+            let headers: Record<string, string> = {};
+            let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
+            headers.Accept = "application/json";
+            ContentUtil.calculuateFromHeadParams(actionDefine, headers);
+            if (method === "get") { return { method, headers: headers }; }
+            let fromBodyParam: IActionParameterDefine[] = params.filter((x) => {
+                if (x.value === undefined) { return false; }
+                let from: IParameterFromDefine | undefined = x.fromDefine;
+                if (from && from.IsFromBody) { return true; }
+                return false;
+            });
+            if (fromBodyParam.length > 0) { // exists from body
+                headers["Content-Type"] = "application/json";
+                let bodyString: string = JSON.stringify(fromBodyParam[0].value);
+                return { method: method, body: bodyString, headers: headers};  // 这儿就返回,因为以 Raw方式提交数据，不应该还能够提交其他数据
+            }
+            headers["Content-Type"] = "application/x-www-form-urlencoded";
+            let body: FormData = new FormData();
+            let leftParams: IActionParameterDefine[] = params.filter((x) => !x.filledToRoute && !x.filledToQuery);
+            leftParams.forEach((param) => {
+                if (param.value !== undefined) {
+                    let value: any = param.value;
+                    // how transfer null param value ?
+                    if (typeof(value) === "string" || typeof(value) === "number" || typeof(value)==="boolean") {
+                        body.set(param.name, "" + value);
+                    }
+                    if (value !== null) {
+                        headers["Content-Type"] = " multipart/form-data";
+                        if (value.size && value.name&& value.lastModified) { // is file
+                            body.append(param.name, value, value.name);
+                        } else {  // not file, transfer use json format
+                            body.append(param.name, JSON.stringify(value));
+                        }
+                    }
+                }
+            });
+            return { method: method, body: body, headers: headers};
+        }
+        /** 处理 fromHead 参数 */
+        static calculuateFromHeadParams(actionDefine: HongboRootAction, headers: Record<string, string>): void {
+            let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
+            let fromHeadParams: IActionParameterDefine[] = params.filter((x) => {
+                let from: IParameterFromDefine | undefined = x.fromDefine;
+                if (from && from.IsFromHeader) { return true; }
+                return false;
+            });
+            fromHeadParams.forEach(element => {
+                if (element.value !== undefined) {
+                    headers[element.name] = element.value;
+                }
+            });
+        }
+        /** 计算提交过来的参数 */
+        static calculateMethod(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+            let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
+            let fromDefine: IHttpMethodDefine | undefined = actionDefine.httpMethod;
+            // action 中明确定义了方法，则使用 action 中的 HttpMethod 方法
+            if (fromDefine) {
+                if (fromDefine.IsHttpGet) { return "get"; }
+                if (fromDefine.IsHttpDelete) { return "delete"; }
+                if (fromDefine.IsHttpHead) { return "head"; }
+                if (fromDefine.IsHttpOptions) { return "options"; }
+                if (fromDefine.IsHttpPatch) { return "patch"; }
+                if (fromDefine.IsHttpPut) { return "put"; }
+                if (fromDefine.IsHttpPost) { return "post"; }
+            }
+            // 如果 action 中没有明确定义方法，则判断参数是否有 fromBody 或者 fromForm,
+            // 如果有，则使用 post 方式提交参数
+            if (params.filter((x) => {
+                let from: IParameterFromDefine | undefined = x.fromDefine;
+                if (from && (from.IsFromBody || from.IsFromForm)) { return true; }
+                let value: any = x.value;
+                if (typeof(value) === "object") { return true; }
+                return false;
+            }).length > 0) {
+                return "post";
+            }
+            // 最后使用 get 形式
+            return "get";
+        }
     }
 
     /** 路由段的工具类 */
@@ -155,7 +328,7 @@ export namespace Hongbo {
                 }
             }
             if (!url) {
-                url = RouteUtil.parceRouteTemplate(HongboRootContol.DefaulMvctRoute, controlDefine, actionDefine);
+                url = RouteUtil.parceRouteTemplate(HongboRootContol.DefaulWebapitRoute, controlDefine, actionDefine);
             }
             return url;
         }
@@ -204,7 +377,7 @@ export namespace Hongbo {
             return url;
         }
 
-        /** 明确指定了 fromQuery 的参数, 产生 queryString */
+        /** 明确指定了 fromQuery 或者 action指定了 httpGet 方法, 产生 queryString */
         private static combineFromQueryParameter(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
             if (actionDefine.inParameterDefines) {
                 let method: IHttpMethodDefine | undefined = actionDefine.httpMethod;
@@ -218,7 +391,10 @@ export namespace Hongbo {
                     if (x.value !== undefined) { return true; }
                     return false;
                 });
-                return params.map((x) => encodeURIComponent(x.name) + "=" + encodeURIComponent(x.value)).join("&");
+                return params.map((x) => {
+                   x.filledToQuery = true;
+                   return encodeURI(x.name) + "=" + encodeURI(x.value);
+                }).join("&");
             }
             return "";
         }
