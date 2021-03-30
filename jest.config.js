@@ -2,7 +2,7 @@ module.exports = {
     roots: [
         "<rootDir>/test"
     ],
-    testEnvironment: "node",
+    testEnvironment: "jsdom",
     testRegex: 'test/(.+)\\.test\\.(jsx?|tsx?)$',
     transform: {
         "^.+\\.tsx?$": "ts-jest"

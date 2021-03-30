@@ -1,15 +1,16 @@
 import { Hongbo } from "../src/auto/RootControlInterfaces";
 import { expect, test, beforeEach } from "@jest/globals";
-const paramArray: Hongbo.IActionParameterDefine[] = [{
-    name: "x",
-    value: 20
-}, {
-    name: "id",
-    value: 123
-}];
+let paramArray: Hongbo.IActionParameterDefine[] = [];
 const aspnetControlDefine: Hongbo.HongboRootContol = new Hongbo.HongboRootContol();
 const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 beforeEach(() => {
+    paramArray = [{
+        name: "x",
+        value: 20
+    }, {
+        name: "id",
+        value: 123
+    }];
     aspnetControlDefine.controlTypeName = "ValuesController";
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.AspNet;
     aspnetControlDefine.controlMode = Hongbo.EnumControlMode.WebApi;
@@ -18,6 +19,16 @@ beforeEach(() => {
     actionDefine.inParameterDefines = paramArray;
 }, 0);
 
+test("RouteUtil.calculateWebApiUrl.Aspnet_WebApi_控制器_无任何路由定义_未指定参数", ()=> {
+    paramArray[1].name = "xid";
+    let result: string = Hongbo.RouteUtil.calculateWebApiUrl(aspnetControlDefine, actionDefine);
+    expect(result).toBe("api/Values");
+});
+
+test("RouteUtil.calculateWebApiUrl.Aspnet_WebApi_控制器_无任何路由定义_指定参数", ()=> {
+    let result: string = Hongbo.RouteUtil.calculateWebApiUrl(aspnetControlDefine, actionDefine);
+    expect(result).toBe("api/Values/123");
+});
 test("RouteUtil.calculateWebApiUrl.Aspnet_WebApi_控制器_RouteArea_RoutePrefix_Route_指定参数", ()=> {
     aspnetControlDefine.environment = Hongbo.EnumEnvironment.AspNet;
     aspnetControlDefine.routeDefine = {
