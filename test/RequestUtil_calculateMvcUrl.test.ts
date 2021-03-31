@@ -7,7 +7,7 @@ const paramArray: Hongbo.IActionParameterDefine[] = [{
     name: "id",
     value: 123
 }];
-const aspnetControlDefine: Hongbo.HongboRootContol = new Hongbo.HongboRootContol();
+const aspnetControlDefine: Hongbo.HongboRootControl = new Hongbo.HongboRootControl();
 const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 beforeEach(() => {
     aspnetControlDefine.controlTypeName = "ValuesController";

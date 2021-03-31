@@ -97,8 +97,9 @@ export namespace Hongbo {
         IsHttpPut?: boolean;
         IsHttpHead?: boolean;
     }
+    type PrehandleRequestType = null | ((url: string, content: IMethodBodyHeader, request: any) => any);
     /** RootController define, all control should extends from this implicit or explicit */
-    export class HongboRootContol {
+    export class HongboRootControl {
         /** the base url  */
         static BaseUrl: string = "http://localhost";
 
@@ -107,6 +108,11 @@ export namespace Hongbo {
 
         /** the default MVC route, see the Startups.cs or WebApiConfig.cs, if option, please assign the id?  */
         static DefaulWebapitRoute: string = "api/{controller}/{id}";
+
+        /** 发送请求之前的全局预处理,静态函数 */
+        static BeforeRequest(url: string, content: IMethodBodyHeader, requestOption: any): any {
+            return requestOption;
+        }
 
         /** which library will be used to send request to server, default will use the fetch of in browser */
         static DefaulRequestMode: EnumRequestMode = EnumRequestMode.Fetch;
@@ -123,6 +129,11 @@ export namespace Hongbo {
         /** ths route defined on Controller */
         public routeDefine?: IRouteDefine;
 
+        /** 发送请求之前的全局预处理,静态函数 */
+        beforeRequest(url: string, content: IMethodBodyHeader, requestOption: any): any {
+            return requestOption;
+        }
+
         /**
          * execute the action
          */
@@ -132,40 +143,48 @@ export namespace Hongbo {
                 if (this.controlMode === EnumControlMode.WebApi) { url = RouteUtil.calculateWebApiUrl(this, actionDefine); } else {
                     throw "We're sorry, the signalR will supported soon.";
                 }
-            if (HongboRootContol.BaseUrl.endsWith("/") || url.startsWith("/")) {
-                url = HongboRootContol.BaseUrl + url;
+            if (HongboRootControl.BaseUrl.endsWith("/") || url.startsWith("/")) {
+                url = HongboRootControl.BaseUrl + url;
             } else {
-                url = HongboRootContol.BaseUrl + "/" + url;
+                url = HongboRootControl.BaseUrl + "/" + url;
             }
             let content: IMethodBodyHeader = ContentUtil.calculateMethodBodyHead(this, actionDefine);
+            let prehandleRequest: PrehandleRequestType = (url, content, request) => {
+                request = HongboRootControl.BeforeRequest(url, content, request);
+                request = this.beforeRequest(url, content, request);
+                return request;
+            };
             try {
-                if (HongboRootContol.DefaulRequestMode === EnumRequestMode.Fetch) {
-                    return HongboRootContol.requestWithFetch(url, content);
+                if (HongboRootControl.DefaulRequestMode === EnumRequestMode.Fetch) {
+                    return HongboRootControl.requestWithFetch(url, content, prehandleRequest);
                 }
-                if (HongboRootContol.DefaulRequestMode === EnumRequestMode.Axios) {
-                    return HongboRootContol.requestWithAxios(url, content);
+                if (HongboRootControl.DefaulRequestMode === EnumRequestMode.Axios) {
+                    return HongboRootControl.requestWithAxios(url, content);
                 }
-                if (HongboRootContol.DefaulRequestMode === EnumRequestMode.Jquery) {
-                    return HongboRootContol.requestWithJquery(url, content);
+                if (HongboRootControl.DefaulRequestMode === EnumRequestMode.Jquery) {
+                    return HongboRootControl.requestWithJquery(url, content);
                 }
-                if (HongboRootContol.DefaulRequestMode === EnumRequestMode.UniApp) {
-                    return HongboRootContol.requestWithUniapp(url, content);
+                if (HongboRootControl.DefaulRequestMode === EnumRequestMode.UniApp) {
+                    return HongboRootControl.requestWithUniapp(url, content);
                 }
-                if (HongboRootContol.DefaulRequestMode === EnumRequestMode.WechatLittleapp) {
-                    return HongboRootContol.requestWithWechatLittleapp(url, content);
+                if (HongboRootControl.DefaulRequestMode === EnumRequestMode.WechatLittleapp) {
+                    return HongboRootControl.requestWithWechatLittleapp(url, content);
                 }
                 throw "Unspoort request library, please email to 54924185@qq.com for advanced help";
             } catch (e) {
                 return Promise.reject(e);
             }
         }
-        static async requestWithFetch(url: string, content: IMethodBodyHeader): Promise<any> {
-            let result: Response = await fetch(url, {
+        static async requestWithFetch(url: string, content: IMethodBodyHeader, beforeRequest: PrehandleRequestType): Promise<any> {
+            let request: Request = new Request(url, {
                 method: content.method,
                 headers: content.headers,
                 body: content.body
                 // mode: "no-cors"
             });
+            request = HongboRootControl.BeforeRequest(url, content, request);
+            if (beforeRequest) { request = beforeRequest(url, content, request); }
+            let result: Response = await fetch(request);
             return result.json();
         }
         static async requestWithAxios(url: string, content: IMethodBodyHeader): Promise<any> {
@@ -175,6 +194,7 @@ export namespace Hongbo {
                 headers: content.headers,
                 data: content.body
             };
+            axiosConfig = HongboRootControl.BeforeRequest(url, content, axiosConfig);
             let result: AxiosResponse<any> = await axios.request(axiosConfig);
             return result.data;
         }
@@ -227,7 +247,7 @@ export namespace Hongbo {
          * 根据 ControlDefine 和 ActionDefine 计算 Http Header
          * @returns Record<string, string>
          */
-        static calculateMethodBodyHead(controlDefine: HongboRootContol, actionDefine: HongboRootAction): IMethodBodyHeader {
+        static calculateMethodBodyHead(controlDefine: HongboRootControl, actionDefine: HongboRootAction): IMethodBodyHeader {
             let method: string = ContentUtil.calculateMethod(controlDefine, actionDefine);
             let headers: Record<string, string> = {};
             let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
@@ -289,7 +309,7 @@ export namespace Hongbo {
             });
         }
         /** 计算提交过来的参数 */
-        static calculateMethod(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        static calculateMethod(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
             let fromDefine: IHttpMethodDefine | undefined = actionDefine.httpMethod;
             // action 中明确定义了方法，则使用 action 中的 HttpMethod 方法
@@ -343,7 +363,7 @@ export namespace Hongbo {
         /**
          * 在 WebApi模式中, 根据路由和给定的参数计算发送请求的 Url
          */
-        static calculateWebApiUrl(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        static calculateWebApiUrl(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             let url: string = "";
             // asp.net ， the route defined on action will replace the route on control
             if (controlDefine.environment === EnumEnvironment.AspNet) {
@@ -365,7 +385,7 @@ export namespace Hongbo {
                 }
             }
             if (!url) {
-                url = RouteUtil.parceRouteTemplate(HongboRootContol.DefaulWebapitRoute, controlDefine, actionDefine);
+                url = RouteUtil.parceRouteTemplate(HongboRootControl.DefaulWebapitRoute, controlDefine, actionDefine);
             }
             return url;
         }
@@ -373,7 +393,7 @@ export namespace Hongbo {
         /**
          * 在 MVC模式中, 根据路由和给定的参数计算发送请求的 Url
          */
-        static calculateMvcUrl(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        static calculateMvcUrl(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             let url: string = "";
 
             // asp.net ， the route defined on action will replace the route on control
@@ -407,7 +427,7 @@ export namespace Hongbo {
                 }
             }
             if (!url) {
-                url += RouteUtil.parceRouteTemplate(HongboRootContol.DefaulMvctRoute, controlDefine, actionDefine);
+                url += RouteUtil.parceRouteTemplate(HongboRootControl.DefaulMvctRoute, controlDefine, actionDefine);
             }
             let queryPar: string = RouteUtil.combineFromQueryParameter(controlDefine, actionDefine);
             if (queryPar) { url = url + "?" + queryPar; }
@@ -415,7 +435,7 @@ export namespace Hongbo {
         }
 
         /** 明确指定了 fromQuery 或者 action指定了 httpGet 方法, 产生 queryString */
-        private static combineFromQueryParameter(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        private static combineFromQueryParameter(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             if (actionDefine.inParameterDefines) {
                 let httpGet: boolean = ContentUtil.calculateMethod(controlDefine, actionDefine) === "get";
                 DebugUtil.info(" HTTPGet=" + httpGet);
@@ -449,14 +469,14 @@ export namespace Hongbo {
             return "";
         }
         /** 解析 routeArea 路由 并利用给定参数填充 */
-        private static parceRouteArea(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        private static parceRouteArea(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             if (controlDefine.routeDefine && controlDefine.routeDefine.RouteAreaContent) {
                 return RouteUtil.parceRouteTemplate(controlDefine.routeDefine.RouteAreaContent, controlDefine, actionDefine) + "/";
             }
             return "";
         }
         /** 解析 routePrefix 路由定义 */
-        private static parceRoutePrefix(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        private static parceRoutePrefix(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             if (controlDefine && controlDefine.routeDefine && controlDefine.routeDefine.RoutePrefixDefine) { //
                 return `${controlDefine.routeDefine.RoutePrefixDefine}` + "/";
             }
@@ -464,7 +484,7 @@ export namespace Hongbo {
         }
 
         /** 解析 action 上的 route 路由定义 */
-        private static parceActionRoute(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        private static parceActionRoute(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             if (actionDefine.routeDefine && actionDefine.routeDefine.RouteContent) {
                 return RouteUtil.parceRouteTemplate(actionDefine.routeDefine.RouteContent, controlDefine, actionDefine);
             }
@@ -472,7 +492,7 @@ export namespace Hongbo {
         }
 
         /** 解析 controller 上的 route 路由定义 */
-        static parceControllerRoute(controlDefine: HongboRootContol, actionDefine: HongboRootAction): string {
+        static parceControllerRoute(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
             if (controlDefine.routeDefine && controlDefine.routeDefine.RouteContent) { // route defined in control
                 return RouteUtil.parceRouteTemplate(controlDefine.routeDefine.RouteContent, controlDefine, actionDefine);
             }
@@ -487,7 +507,7 @@ export namespace Hongbo {
          *  @returns url , should replaced with paramter transfered to the action, and
          *                 suffix with the parameter which defined fromQuery attribute
          */
-        public static parceRouteTemplate(template: string, control: HongboRootContol, actionDefine: HongboRootAction): string {
+        public static parceRouteTemplate(template: string, control: HongboRootControl, actionDefine: HongboRootAction): string {
             let paramArray: IActionParameterDefine[] = actionDefine.inParameterDefines;
             const original: string = template;
             // replace the {controller} withc type of Control

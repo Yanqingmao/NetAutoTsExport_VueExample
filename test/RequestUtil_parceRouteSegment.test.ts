@@ -4,7 +4,7 @@ const paramArray: Hongbo.IActionParameterDefine[] = [{
     name: "x",
     value: 20
 }];
-const controlDefine: Hongbo.HongboRootContol = new Hongbo.HongboRootContol();
+const controlDefine: Hongbo.HongboRootControl = new Hongbo.HongboRootControl();
 const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 beforeEach(() => {
     controlDefine.controlTypeName = "ValuesController";

@@ -2,7 +2,7 @@ import { Hongbo } from "../src/auto/RootControlInterfaces";
 import { expect, test, beforeEach } from "@jest/globals";
 import linq from "linq";
 let paramArray: Hongbo.IActionParameterDefine[] = [];
-const controlDefine: Hongbo.HongboRootContol = new Hongbo.HongboRootContol();
+const controlDefine: Hongbo.HongboRootControl = new Hongbo.HongboRootControl();
 const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 let url: string = "";
 beforeEach(() => {

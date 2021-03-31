@@ -54,7 +54,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithFetch(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithFetch(this.url, content, null).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -62,7 +62,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithFetch(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithFetch(this.url, content, null).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -72,7 +72,7 @@ import Vue from 'vue';
 					body: JSON.stringify({Name: "daiwei"})
 				};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithFetch(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithFetch(this.url, content, null).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -80,7 +80,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithAxios(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithAxios(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -88,7 +88,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithAxios(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithAxios(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -98,7 +98,7 @@ import Vue from 'vue';
 					body: JSON.stringify({Name: "daiwei"})
 				};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithAxios(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithAxios(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -106,7 +106,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithJquery(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithJquery(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -114,7 +114,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithJquery(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithJquery(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -124,7 +124,7 @@ import Vue from 'vue';
 					body: JSON.stringify({Name: "daiwei"})
 				};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithJquery(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithJquery(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -132,7 +132,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithUniapp(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithUniapp(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -140,7 +140,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithUniapp(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithUniapp(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -150,7 +150,7 @@ import Vue from 'vue';
 					body: JSON.stringify({Name: "daiwei"})
 				};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithUniapp(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithUniapp(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -158,7 +158,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithWechatLittleapp(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithWechatLittleapp(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -166,7 +166,7 @@ import Vue from 'vue';
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithWechatLittleapp(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithWechatLittleapp(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
@@ -176,7 +176,7 @@ import Vue from 'vue';
 					body: JSON.stringify({Name: "daiwei"})
 				};
 				this.content = JSON.stringify(content);
-    			Hongbo.HongboRootContol.requestWithWechatLittleapp(this.url, content).then((x) => {
+    			Hongbo.HongboRootControl.requestWithWechatLittleapp(this.url, content).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			}

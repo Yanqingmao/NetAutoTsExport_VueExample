@@ -1,7 +1,7 @@
 import { Hongbo } from "../src/auto/RootControlInterfaces";
 import { expect, test, beforeEach } from "@jest/globals";
 let paramArray: Hongbo.IActionParameterDefine[] = [];
-const aspnetControlDefine: Hongbo.HongboRootContol = new Hongbo.HongboRootContol();
+const aspnetControlDefine: Hongbo.HongboRootControl = new Hongbo.HongboRootControl();
 const actionDefine: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
 beforeEach(() => {
     paramArray = [{
