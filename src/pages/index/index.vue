@@ -1,5 +1,11 @@
 <template>
-	<view class="content">
+	<view class="content">	
+		<view>
+			<h5>测试 RootControlInterfaces 中的所有 Web库的使用方法 </h5>
+		</view>
+		<view style='div:flex; flex-wrap:wrap; flex-direction: row;'>
+            <button @click='jumpToControleExample'>Jump To Control Example</button>
+		</view>
 		<view style='div:flex; flex-wrap:wrap; flex-direction: row;'>
             <button @click='fetchGetTest'>fetchGetTest</button>
             <button @click='fetchGetNoIdUrlTest'>fetchGetNoIdUrlTest</button>
@@ -50,6 +56,11 @@ import Vue from 'vue';
 
 		},
 		methods: {
+			jumpToControleExample() {
+				uni.navigateTo({
+					url: "../autouse/index"
+				});
+			},
 			fetchGetTest() {
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     			let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
@@ -64,7 +75,7 @@ import Vue from 'vue';
 				this.content = JSON.stringify(content);
     			Hongbo.HongboRootControl.requestWithFetch(this.url, content, null).then((x) => {
         			this.response = JSON.stringify(x);
-    			});
+    			});   
 			},
 			fetchFromBodyTest() {
 			    this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/";

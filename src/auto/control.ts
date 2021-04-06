@@ -2,7 +2,17 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 
 export namespace Hongbo {
-    type PrehandleRequestType = (url: string, content: IMethodBodyHeader, request: AxiosRequestConfig) => AxiosRequestConfig;
+    /** handle the request before a request send to server
+     */
+    // tslint:disable-next-line:max-line-length
+    type PrehandleRequestBeforeSendToServer = (url: string, content: IMethodBodyHeader, request:  AxiosRequestConfig) =>  AxiosRequestConfig;
+    /** prehandle the request/response before a request send to/receive from server
+     */
+    type PrehandleResponseAfterServerReturn = (url: string, content: IMethodBodyHeader, promiseResponse: Promise<any>) => Promise<any>;
+    type IPrehandleRequestOption<TPrehandle> = {
+        neeClearAfterCalled: boolean;
+        prehandle: TPrehandle;
+    };
     /** rout define in control or action */
     export interface IRouteDefine {
         /** route define in control or action,
@@ -84,6 +94,17 @@ export namespace Hongbo {
         IsHttpPut?: boolean;
         IsHttpHead?: boolean;
     }
+    /** control option  */
+    export interface IControlOption {
+        /** the type name of Controller */
+        controlTypeName: string;
+        /** .net environment, default will be the .NetCore  */
+        environment: EnumEnvironment;
+        /** the mode of Controller, default will be the WebApi */
+        controlMode: EnumControlMode;
+        /** ths route defined on Controller */
+        routeDefine?: IRouteDefine;
+    }
     /** RootController define, all control should extends from this implicit or explicit */
     export class HongboRootControl {
         /** the base url  */
@@ -95,10 +116,36 @@ export namespace Hongbo {
         /** the default MVC route, see the Startups.cs or WebApiConfig.cs, if option, please assign the id?  */
         static DefaulWebapitRoute: string = "api/{controller}/{id}";
 
-        /** 发送请求之前的全局预处理,静态函数 */
-        static BeforeRequest(url: string, content: IMethodBodyHeader, requestOption: AxiosRequestConfig): AxiosRequestConfig {
-            return requestOption;
+        private static globalPrehandleRequestOption?: IPrehandleRequestOption<PrehandleRequestBeforeSendToServer>;
+        /** prehandle the requesoption instance before every request send to server
+         *  @param prehandleRequestOption -- prehandle option instance
+         *      if the neeClearAfterCalled is set true, will clear HongboRootControl.globalPrehandleRequestOption, so
+         *       you must call SetGlobalBeforeRequest function;
+         *      if the neeClearAfterCalled is set false, will remain HongboRootControl.globalPrehandleRequestOption, so
+         *       will handle the request before every action send data to the server;
+         */
+        static SetGlobalBeforeRequest(prehandleRequestOption: IPrehandleRequestOption<PrehandleRequestBeforeSendToServer>): void {
+            HongboRootControl.globalPrehandleRequestOption = prehandleRequestOption;
         }
+
+        private static globalPrehandleResponseOption?: IPrehandleRequestOption<PrehandleResponseAfterServerReturn>;
+        /** prehandle every the response after receive data from server,
+         *  if set, it will handle all the response from server.
+         *  @param prehandleRequestOption -- prehandle option instance
+         *      if the neeClearAfterCalled is set true, will clear HongboRootControl.globalPrehandleResponseOption, so
+         *       you must call SetGlobalAfterRequest function;
+         *      if the neeClearAfterCalled is set false, will remain HongboRootControl.globalPrehandleResponseOption, so
+         *       will handle the response before response act as the result the action;
+         */
+        static SetGlobalAfterRequest(prehandleResponseOption: IPrehandleRequestOption<PrehandleResponseAfterServerReturn>): void {
+            HongboRootControl.globalPrehandleResponseOption = prehandleResponseOption;
+        }
+
+        protected controlOption: IControlOption = {
+            controlTypeName: "",
+            environment: EnumEnvironment.NetCore,
+            controlMode: EnumControlMode.WebApi
+        };
 
         /** the type name of Controller */
         public controlTypeName: string = "";
@@ -112,39 +159,49 @@ export namespace Hongbo {
         /** ths route defined on Controller */
         public routeDefine?: IRouteDefine;
 
-        /** 发送请求之前的类内预处理,实例函数 */
-        beforeRequest(url: string, content: IMethodBodyHeader, requestOption: AxiosRequestConfig): AxiosRequestConfig {
-            return requestOption;
-        }
-
         /**
          * execute the action
          */
-        callAction(actionDefine: HongboRootAction): Promise<any> {
+        protected callAction(actionDefine: HongboRootAction): Promise<any> {
             let url: string = "";
-            if (this.controlMode === EnumControlMode.Mvc) { url = RouteUtil.calculateMvcUrl(this, actionDefine); } else
-                if (this.controlMode === EnumControlMode.WebApi) { url = RouteUtil.calculateWebApiUrl(this, actionDefine); } else {
-                    throw "We're sorry, the signalR will supported soon.";
-                }
+            if (this.controlOption.controlMode === EnumControlMode.Mvc) {
+                url = RouteUtil.calculateMvcUrl(this.controlOption, actionDefine);
+            } else if (this.controlOption.controlMode === EnumControlMode.WebApi) {
+                url = RouteUtil.calculateWebApiUrl(this.controlOption, actionDefine);
+            } else {
+                throw "We're sorry, the signalR will supported soon.";
+            }
             if (HongboRootControl.BaseUrl.endsWith("/") || url.startsWith("/")) {
                 url = HongboRootControl.BaseUrl + url;
             } else {
                 url = HongboRootControl.BaseUrl + "/" + url;
             }
-            let prehandleRequest: PrehandleRequestType = (url, content, request) => {
-                request = HongboRootControl.BeforeRequest(url, content, request);
-                request = this.beforeRequest(url, content, request);
+            let prehandleRequest: PrehandleRequestBeforeSendToServer = (url, content, request) => {
+                if (HongboRootControl.globalPrehandleRequestOption && HongboRootControl.globalPrehandleRequestOption.prehandle) {
+                    request = HongboRootControl.globalPrehandleRequestOption.prehandle(url, content, request);
+                    if (HongboRootControl.globalPrehandleRequestOption.neeClearAfterCalled) {
+                        HongboRootControl.globalPrehandleRequestOption = undefined;
+                    }
+                }
                 return request;
             };
-            let content: IMethodBodyHeader = ContentUtil.calculateMethodBodyHead(this, actionDefine);
+            let content: IMethodBodyHeader = ContentUtil.calculateMethodBodyHead(this.controlOption, actionDefine);
             try {
-                 return HongboRootControl.sendRequestToServer(url, content, prehandleRequest);
+                 let result: Promise<any> = HongboRootControl.sendRequestToServer(url, content, prehandleRequest);
+                 if (HongboRootControl.globalPrehandleResponseOption && HongboRootControl.globalPrehandleResponseOption.prehandle) {
+                    result = HongboRootControl.globalPrehandleResponseOption.prehandle(url, content, result);
+                    if (HongboRootControl.globalPrehandleResponseOption.neeClearAfterCalled) {
+                        HongboRootControl.globalPrehandleResponseOption = undefined;
+                    }
+                }
+                 return result;
             } catch (e) {
                 return Promise.reject(e);
             }
         }
 
-        static async sendRequestToServer(url: string, content: IMethodBodyHeader, prehandleRequest: PrehandleRequestType): Promise<any> {
+        // tslint:disable-next-line:max-line-length
+        private static async sendRequestToServer(url: string, content: IMethodBodyHeader, prehandleRequest: PrehandleRequestBeforeSendToServer): Promise<any> {
             let request: AxiosRequestConfig = {
                 method: content.method as Method,
                 url: url,
@@ -171,7 +228,7 @@ export namespace Hongbo {
          * 根据 ControlDefine 和 ActionDefine 计算 Http Header
          * @returns Record<string, string>
          */
-        static calculateMethodBodyHead(controlDefine: HongboRootControl, actionDefine: HongboRootAction): IMethodBodyHeader {
+        static calculateMethodBodyHead(controlDefine: IControlOption, actionDefine: HongboRootAction): IMethodBodyHeader {
             let method: string = ContentUtil.calculateMethod(controlDefine, actionDefine);
             let headers: Record<string, string> = {};
             let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
@@ -233,7 +290,7 @@ export namespace Hongbo {
             });
         }
         /** 计算提交过来的参数 */
-        static calculateMethod(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        static calculateMethod(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             let params: IActionParameterDefine[] = actionDefine.inParameterDefines;
             let fromDefine: IHttpMethodDefine | undefined = actionDefine.httpMethod;
             // action 中明确定义了方法，则使用 action 中的 HttpMethod 方法
@@ -287,7 +344,7 @@ export namespace Hongbo {
         /**
          * 在 WebApi模式中, 根据路由和给定的参数计算发送请求的 Url
          */
-        static calculateWebApiUrl(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        static calculateWebApiUrl(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             let url: string = "";
             // asp.net ， the route defined on action will replace the route on control
             if (controlDefine.environment === EnumEnvironment.AspNet) {
@@ -317,7 +374,7 @@ export namespace Hongbo {
         /**
          * 在 MVC模式中, 根据路由和给定的参数计算发送请求的 Url
          */
-        static calculateMvcUrl(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        static calculateMvcUrl(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             let url: string = "";
 
             // asp.net ， the route defined on action will replace the route on control
@@ -359,7 +416,7 @@ export namespace Hongbo {
         }
 
         /** 明确指定了 fromQuery 或者 action指定了 httpGet 方法, 产生 queryString */
-        private static combineFromQueryParameter(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        private static combineFromQueryParameter(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             if (actionDefine.inParameterDefines) {
                 let httpGet: boolean = ContentUtil.calculateMethod(controlDefine, actionDefine) === "get";
                 DebugUtil.info(" HTTPGet=" + httpGet);
@@ -393,14 +450,14 @@ export namespace Hongbo {
             return "";
         }
         /** 解析 routeArea 路由 并利用给定参数填充 */
-        private static parceRouteArea(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        private static parceRouteArea(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             if (controlDefine.routeDefine && controlDefine.routeDefine.RouteAreaContent) {
                 return RouteUtil.parceRouteTemplate(controlDefine.routeDefine.RouteAreaContent, controlDefine, actionDefine) + "/";
             }
             return "";
         }
         /** 解析 routePrefix 路由定义 */
-        private static parceRoutePrefix(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        private static parceRoutePrefix(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             if (controlDefine && controlDefine.routeDefine && controlDefine.routeDefine.RoutePrefixDefine) { //
                 return `${controlDefine.routeDefine.RoutePrefixDefine}` + "/";
             }
@@ -408,7 +465,7 @@ export namespace Hongbo {
         }
 
         /** 解析 action 上的 route 路由定义 */
-        private static parceActionRoute(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        private static parceActionRoute(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             if (actionDefine.routeDefine && actionDefine.routeDefine.RouteContent) {
                 return RouteUtil.parceRouteTemplate(actionDefine.routeDefine.RouteContent, controlDefine, actionDefine);
             }
@@ -416,7 +473,7 @@ export namespace Hongbo {
         }
 
         /** 解析 controller 上的 route 路由定义 */
-        static parceControllerRoute(controlDefine: HongboRootControl, actionDefine: HongboRootAction): string {
+        static parceControllerRoute(controlDefine: IControlOption, actionDefine: HongboRootAction): string {
             if (controlDefine.routeDefine && controlDefine.routeDefine.RouteContent) { // route defined in control
                 return RouteUtil.parceRouteTemplate(controlDefine.routeDefine.RouteContent, controlDefine, actionDefine);
             }
@@ -431,7 +488,7 @@ export namespace Hongbo {
          *  @returns url , should replaced with paramter transfered to the action, and
          *                 suffix with the parameter which defined fromQuery attribute
          */
-        public static parceRouteTemplate(template: string, control: HongboRootControl, actionDefine: HongboRootAction): string {
+        public static parceRouteTemplate(template: string, control: IControlOption, actionDefine: HongboRootAction): string {
             let paramArray: IActionParameterDefine[] = actionDefine.inParameterDefines;
             const original: string = template;
             // replace the {controller} withc type of Control
@@ -509,26 +566,48 @@ Hongbo.HongboRootControl.DefaulMvctRoute = "{controller}/{action}/{id?}";
 export namespace TsGenAspnetExample.Controllers {
     export class HomeController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new HomeController();
+        public static Instance = new HomeController();
 
         /** define the constructor of HomeController */
         constructor() {
             super();
-            this.controlTypeName = "HomeController";
-            this.controlMode = 1;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "HomeController",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
+        }
+        /** without remark
+         *   @param dbContext without remark
+         */
+        static Index(): Promise<null | Entitys.TsGenAspnetExample.Models.Dog> {
+            let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
+            actionInfo.inParameterDefines = [];
+            return HomeController.Instance.callAction(actionInfo);
+        }
+        /** without remark
+         *   @param dbContext without remark
+         */
+        static Welcome(): Promise<any> {
+            let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
+            actionInfo.inParameterDefines = [];
+            return HomeController.Instance.callAction(actionInfo);
         }
     }
     export class TestRouteController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestRouteController();
+        public static Instance = new TestRouteController();
 
         /** define the constructor of TestRouteController */
         constructor() {
             super();
-            this.controlTypeName = "TestRouteController";
-            this.controlMode = 1;
-            this.routeDefine = {"RouteContent":"tr/{action}"};
+            this.controlOption= {
+                controlTypeName: "TestRouteController",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {"RouteContent":"tr/{action}"}
+            };
         }
         /** without remark */
         static Ask(): Promise<null | string> {
@@ -567,14 +646,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class TestRouteAreaAndRoutePrefixController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestRouteAreaAndRoutePrefixController();
+        public static Instance = new TestRouteAreaAndRoutePrefixController();
 
         /** define the constructor of TestRouteAreaAndRoutePrefixController */
         constructor() {
             super();
-            this.controlTypeName = "TestRouteAreaAndRoutePrefixController";
-            this.controlMode = 1;
-            this.routeDefine = {"RouteAreaContent":"{lang=zh-CN}/ra"};
+            this.controlOption= {
+                controlTypeName: "TestRouteAreaAndRoutePrefixController",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {"RouteAreaContent":"{lang=zh-CN}/ra"}
+            };
         }
         /** without remark
          *   @param lang without remark
@@ -617,14 +699,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class TestRouteAreaController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestRouteAreaController();
+        public static Instance = new TestRouteAreaController();
 
         /** define the constructor of TestRouteAreaController */
         constructor() {
             super();
-            this.controlTypeName = "TestRouteAreaController";
-            this.controlMode = 1;
-            this.routeDefine = {"RouteAreaContent":"{lang=zh-CN}/ra"};
+            this.controlOption= {
+                controlTypeName: "TestRouteAreaController",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {"RouteAreaContent":"{lang=zh-CN}/ra"}
+            };
         }
         /** without remark
          *   @param lang without remark
@@ -669,14 +754,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class TestRoutePrefixController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestRoutePrefixController();
+        public static Instance = new TestRoutePrefixController();
 
         /** define the constructor of TestRoutePrefixController */
         constructor() {
             super();
-            this.controlTypeName = "TestRoutePrefixController";
-            this.controlMode = 1;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "TestRoutePrefixController",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark */
         static Hello(): Promise<null | string> {
@@ -714,14 +802,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class NoAnyAttrWebapiController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new NoAnyAttrWebapiController();
+        public static Instance = new NoAnyAttrWebapiController();
 
         /** define the constructor of NoAnyAttrWebapiController */
         constructor() {
             super();
-            this.controlTypeName = "NoAnyAttrWebapiController";
-            this.controlMode = 0;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "NoAnyAttrWebapiController",
+                controlMode: Hongbo.EnumControlMode.WebApi,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark
          *   @param id without remark
@@ -734,9 +825,9 @@ export namespace TsGenAspnetExample.Controllers {
             return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
         }
         /** without remark */
-        static get(): Promise<null | Entitys.TsGenAspnetExample.Models.Person[]> {
+        static get(): Promise<null | Entitys.TsGenAspnetExample.Models.Manager[]> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
             return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
         }
@@ -745,7 +836,7 @@ export namespace TsGenAspnetExample.Controllers {
          */
         static Get(id: number): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
             return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
@@ -753,7 +844,7 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark */
         static Options(): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpGet":true};
+            actionInfo.httpMethod = {"IsHttpOptions":true};
             actionInfo.inParameterDefines = [];
             return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
         }
@@ -763,6 +854,7 @@ export namespace TsGenAspnetExample.Controllers {
          */
         // tslint:disable-next-line:max-line-length
         static Patch(id: number,value: null | Entitys.TsGenAspnetExample.Models.Person): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPatch":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
@@ -786,6 +878,7 @@ export namespace TsGenAspnetExample.Controllers {
          */
         // tslint:disable-next-line:max-line-length
         static Put(id: number,value: null | Entitys.TsGenAspnetExample.Models.Person): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPut":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
@@ -796,14 +889,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class TestAreaTestPrefixValuesController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestAreaTestPrefixValuesController();
+        public static Instance = new TestAreaTestPrefixValuesController();
 
         /** define the constructor of TestAreaTestPrefixValuesController */
         constructor() {
             super();
-            this.controlTypeName = "TestAreaTestPrefixValuesController";
-            this.controlMode = 0;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "TestAreaTestPrefixValuesController",
+                controlMode: Hongbo.EnumControlMode.WebApi,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark
          *   @param id without remark
@@ -818,7 +914,7 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark */
         static Get(): Promise<null | string[]> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
             return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
         }
@@ -827,7 +923,7 @@ export namespace TsGenAspnetExample.Controllers {
          */
         static GetById(id: number): Promise<null | string> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
             return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
@@ -857,14 +953,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class TestPrefixValuesController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestPrefixValuesController();
+        public static Instance = new TestPrefixValuesController();
 
         /** define the constructor of TestPrefixValuesController */
         constructor() {
             super();
-            this.controlTypeName = "TestPrefixValuesController";
-            this.controlMode = 0;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "TestPrefixValuesController",
+                controlMode: Hongbo.EnumControlMode.WebApi,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark
          *   @param id without remark
@@ -879,7 +978,7 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark */
         static Get(): Promise<null | string[]> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
             return TestPrefixValuesController.Instance.callAction(actionInfo);
         }
@@ -888,7 +987,7 @@ export namespace TsGenAspnetExample.Controllers {
          */
         static GetById(id: number): Promise<null | string> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
             return TestPrefixValuesController.Instance.callAction(actionInfo);
@@ -918,14 +1017,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class NoRouteValuesController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new NoRouteValuesController();
+        public static Instance = new NoRouteValuesController();
 
         /** define the constructor of NoRouteValuesController */
         constructor() {
             super();
-            this.controlTypeName = "NoRouteValuesController";
-            this.controlMode = 0;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "NoRouteValuesController",
+                controlMode: Hongbo.EnumControlMode.WebApi,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark
          *   @param id without remark
@@ -962,19 +1064,22 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class ValuesController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new ValuesController();
+        public static Instance = new ValuesController();
 
         /** define the constructor of ValuesController */
         constructor() {
             super();
-            this.controlTypeName = "ValuesController";
-            this.controlMode = 0;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "ValuesController",
+                controlMode: Hongbo.EnumControlMode.WebApi,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark
          *   @param id without remark
          */
-        static Get(id: number): Promise<null | string> {
+        static Get(id: number): Promise<null | string[]> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
@@ -984,7 +1089,7 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param lang without remark
          */
-        static Test(lang: null | string): Promise<null | string> {
+        static Test(lang: null | string): Promise<Record<string,null | Entitys.TsGenAspnetExample.Models.Person>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
@@ -1006,14 +1111,17 @@ export namespace TsGenAspnetExample.Controllers {
     }
     export class TestAreaValuesController extends Hongbo.HongboRootControl {
         /** define a static instance of Constructor */
-        private static Instance = new TestAreaValuesController();
+        public static Instance = new TestAreaValuesController();
 
         /** define the constructor of TestAreaValuesController */
         constructor() {
             super();
-            this.controlTypeName = "TestAreaValuesController";
-            this.controlMode = 0;
-            this.routeDefine = {};
+            this.controlOption= {
+                controlTypeName: "TestAreaValuesController",
+                controlMode: Hongbo.EnumControlMode.WebApi,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
         }
         /** without remark
          *   @param id without remark
@@ -1028,7 +1136,7 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark */
         static Get(): Promise<null | string[]> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
             return TestAreaValuesController.Instance.callAction(actionInfo);
         }
@@ -1037,7 +1145,7 @@ export namespace TsGenAspnetExample.Controllers {
          */
         static GetById(id: number): Promise<null | string> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
-            actionInfo.httpMethod = {"IsHttpPost":true};
+            actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
             return TestAreaValuesController.Instance.callAction(actionInfo);
