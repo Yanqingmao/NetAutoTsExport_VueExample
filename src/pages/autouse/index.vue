@@ -10,7 +10,7 @@
             <button @click='axios_Get_NoParameter_Test'>axios_Get_NoParameter_Test</button>
             <button @click='axios_Get_Id_Test'>axios_Get_Id_Test</button>
             <button @click='axios_post_withBody_Test(false)'>axios_post_withBody_Test</button>
-            <button @click='axios_post_withBody_Test(true)'>axios_post_withBody_Prehandle_Test</button>
+            <button @click='axios_post_withBody_Test(true)'>axios_post_withBody_Prehandle_Test(Promise Reject)</button>
         </view>
 		<h6>Request Url</h6>
 		<view style='div: flex; flex-wrap: wrap;'>{{url}}</view>
@@ -38,26 +38,33 @@ import Vue from 'vue';
 
 		},
 		methods: {
+			clear() {
+				this.response = "";
+				this.content = {};
+			},
 			jumpToRootControlExample() {
 				uni.navigateTo({
 					url: "../index/index"
 				});
 			},
 			axios_Get_NoParameter_Test() {
+				this.clear();
 			   // this.url = "http://localhost/TsGenAspnetExample/api/noanyattrwebapi/1234";
     		   // let content: Hongbo.IMethodBodyHeader = { method: "get", headers: { "accept": "application/json" }};
 			   // this.content = JSON.stringify(content);
-    			Root.TsGenAspnetExample.Controllers.NoAnyAttrWebapiController.get().then((x) => {
+    			Root.TsGenAspnetExample.Controllers.NoAnyAttrWebapiInstance.get().then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
 			axios_Get_Id_Test() {
-    			Root.TsGenAspnetExample.Controllers.NoAnyAttrWebapiController.Get(1234).then((x) => {
+				this.clear();
+    			Root.TsGenAspnetExample.Controllers.NoAnyAttrWebapiInstance.Get(1234).then((x) => {
         			this.response = JSON.stringify(x);
     			});
 			},
 			axios_post_withBody_Test(prehandleResponse: boolean = false) {  
-			    let person: Entitys.TsGenAspnetExample.Models.Person = new Entitys.TsGenAspnetExample.Models.PersonImpl();
+				this.clear();
+			    let person: Entitys.TsGenAspnetExample.Models.Person = new Entitys.TsGenAspnetExample.Models.Person();
 				if (prehandleResponse) {
 					person.Name = "Yongxin Wang"; 
 				} else {
@@ -68,19 +75,21 @@ import Vue from 'vue';
 					prehandle:  (url, content, resultPromise) => {
 						return resultPromise.then((data) => {
 							let result: Entitys.TsGenAspnetExample.Models.Person = data as Entitys.TsGenAspnetExample.Models.Person;
-							if (result.Name?.indexOf("Yongxin Wang")??0 >= 0) {
+							let pos = result.Name?.indexOf("Yongxin Wang")??0;
+							if ( pos>= 0) {
+								alert("" + pos + " 进入错误处理模式(Enter the error handle");
 								return Promise.reject(result);
 							}
-							else {
+							else {								
 								return Promise.resolve(result);
 							}
 						});
 					}
 				});
-    			Root.TsGenAspnetExample.Controllers.NoAnyAttrWebapiController.Post(person).then((x) => {
+    			Root.TsGenAspnetExample.Controllers.NoAnyAttrWebapiInstance.Post(person).then((x) => {
         			this.response = JSON.stringify(x);
     			}).catch((e) => {
-					alert(e);
+					alert(JSON.stringify(e));
 				});
 			}
 		}

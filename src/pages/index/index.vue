@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-    import { Hongbo } from '@/auto/RootControlInterfaces';
+    import { Hongbo } from '@/auto_libs/RootControlInterfaces';
 import Vue from 'vue';
 	export default Vue.extend({
 		data() {

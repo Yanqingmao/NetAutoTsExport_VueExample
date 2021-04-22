@@ -1,4 +1,4 @@
-import { Hongbo } from "../src/auto/RootControlInterfaces";
+import { Hongbo } from "../src/auto_libs/RootControlInterfaces";
 import { expect, test, beforeEach } from "@jest/globals";
 import linq from "linq";
 let paramArray: Hongbo.IActionParameterDefine[] = [];

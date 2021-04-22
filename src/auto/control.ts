@@ -564,9 +564,28 @@ Hongbo.HongboRootControl.BaseUrl = "http://localhost/TsGenAspnetExample";
 Hongbo.HongboRootControl.DefaulWebapitRoute = "api/{controller}/{id?}";
 Hongbo.HongboRootControl.DefaulMvctRoute = "{controller}/{action}/{id?}";
 export namespace TsGenAspnetExample.Controllers {
-    export class HomeController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new HomeController();
+    // tslint:disable-next-line:class-name
+    export abstract class AbstractGenericDbContextController<TDbContext> extends Hongbo.HongboRootControl {
+
+        /** define the constructor of AbstractGenericDbContextController`1 */
+        constructor() {
+            super();
+            this.controlOption= {
+                controlTypeName: "AbstractGenericDbContextController`1",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
+        }
+        /** without remark */
+        TestParent(): Promise<Entitys.Null_Or_String> {
+            let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
+            actionInfo.inParameterDefines = [];
+            return this.callAction(actionInfo);
+        }
+    }
+    // tslint:disable-next-line:class-name
+    export class HomeController extends AbstractGenericDbContextController<object> {
 
         /** define the constructor of HomeController */
         constructor() {
@@ -578,26 +597,49 @@ export namespace TsGenAspnetExample.Controllers {
                 routeDefine: {}
             };
         }
-        /** without remark
-         *   @param dbContext without remark
-         */
-        static Index(): Promise<null | Entitys.TsGenAspnetExample.Models.Dog> {
+        /** without remark */
+        // tslint:disable-next-line:max-line-length
+        GenericValueType(): Promise<Entitys.System.Tuple_2<Entitys.Hongbo.Basic.Systems.CheckResult,Array<Entitys.TsGenAspnetExample.Models.Person>>> {
+
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return HomeController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param dbContext without remark
          */
-        static Welcome(): Promise<any> {
+        Index(): Promise<Entitys.Null_Or_DogInTsGenAspnetExampleModels> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return HomeController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
+        }
+        /** without remark
+         *   @param dbContext without remark
+         */
+        OrderHandle(): Promise<Entitys.Null_Or_WechatOrderInTsGenAspnetExampleModels> {
+            let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
+            actionInfo.inParameterDefines = [];
+            return this.callAction(actionInfo);
+        }
+        /** without remark */
+        // tslint:disable-next-line:max-line-length
+        TestGenericWorkFlow(): Promise<Entitys.Null_Or_GenericWorkFlowInTsGenAspnetExampleModels<Entitys.TsGenAspnetExample.Models.Dog,Entitys.TsGenAspnetExample.Models.EnumAnimalType>> {
+
+            let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
+            actionInfo.inParameterDefines = [];
+            return this.callAction(actionInfo);
+        }
+        /** without remark
+         *   @param dbContext without remark
+         */
+        Welcome(): Promise<any> {
+            let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
+            actionInfo.inParameterDefines = [];
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class TestRouteController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestRouteController();
 
         /** define the constructor of TestRouteController */
         constructor() {
@@ -610,43 +652,56 @@ export namespace TsGenAspnetExample.Controllers {
             };
         }
         /** without remark */
-        static Ask(): Promise<null | string> {
+        Ask(): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return TestRouteController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          */
-        static Hello(lang: null | string): Promise<null | string> {
+        Hello(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"hello","ActionNameContent":"h"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = lang;
-            return TestRouteController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Index(): Promise<null | string> {
+        Index(): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return TestRouteController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          *   @param name without remark
          */
-        static RootSay(lang: null | string,name: null | string): Promise<null | string> {
+        RootSay(lang: Entitys.Null_Or_String,name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"rsay/{name=daiwei}"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"},{"fromDefine":{},"name":"name"}];
             actionInfo.inParameterDefines[0].value = lang;
             actionInfo.inParameterDefines[1].value = name;
-            return TestRouteController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
-    export class TestRouteAreaAndRoutePrefixController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestRouteAreaAndRoutePrefixController();
+    // tslint:disable-next-line:class-name
+    export abstract class AbstractGenericDbContextController_2<TDbContext,TModel> extends Hongbo.HongboRootControl {
+
+        /** define the constructor of AbstractGenericDbContextController`2 */
+        constructor() {
+            super();
+            this.controlOption= {
+                controlTypeName: "AbstractGenericDbContextController`2",
+                controlMode: Hongbo.EnumControlMode.Mvc,
+                environment: Hongbo.EnumEnvironment.AspNet,
+                routeDefine: {}
+            };
+        }
+    }
+    // tslint:disable-next-line:max-line-length & class-name
+    export class TestRouteAreaAndRoutePrefixController extends AbstractGenericDbContextController_2<object,Entitys.Null_Or_AnimalInTsGenAspnetExampleModels> {
 
         /** define the constructor of TestRouteAreaAndRoutePrefixController */
         constructor() {
@@ -661,45 +716,44 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param lang without remark
          */
-        static Hello(lang: null | string): Promise<null | string> {
+        Hello(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"hello","ActionNameContent":"h"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = lang;
-            return TestRouteAreaAndRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Index(): Promise<null | string> {
+        Index(): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return TestRouteAreaAndRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          *   @param name without remark
          */
-        static Say(lang: null | string,name: null | string): Promise<null | string> {
+        Say(lang: Entitys.Null_Or_String,name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"say/{name=daiwei}"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"},{"fromDefine":{},"name":"name"}];
             actionInfo.inParameterDefines[0].value = lang;
             actionInfo.inParameterDefines[1].value = name;
-            return TestRouteAreaAndRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          */
-        static World(lang: null | string): Promise<null | string> {
+        World(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"ActionNameContent":"h"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = lang;
-            return TestRouteAreaAndRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class TestRouteAreaController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestRouteAreaController();
 
         /** define the constructor of TestRouteAreaController */
         constructor() {
@@ -714,47 +768,46 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param lang without remark
          */
-        static Hello(lang: null | string): Promise<null | string> {
+        Hello(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"hello"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = lang;
-            return TestRouteAreaController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Index(): Promise<null | string> {
+        Index(): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return TestRouteAreaController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          *   @param name without remark
          */
-        static RootSay(lang: null | string,name: null | string): Promise<null | string> {
+        RootSay(lang: Entitys.Null_Or_String,name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"rsay/{name=daiwei}"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"},{"fromDefine":{},"name":"name"}];
             actionInfo.inParameterDefines[0].value = lang;
             actionInfo.inParameterDefines[1].value = name;
-            return TestRouteAreaController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          *   @param name without remark
          */
-        static Say(lang: null | string,name: null | string): Promise<null | string> {
+        Say(lang: Entitys.Null_Or_String,name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"say/{name=daiwei}"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"},{"fromDefine":{},"name":"name"}];
             actionInfo.inParameterDefines[0].value = lang;
             actionInfo.inParameterDefines[1].value = name;
-            return TestRouteAreaController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class TestRoutePrefixController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestRoutePrefixController();
 
         /** define the constructor of TestRoutePrefixController */
         constructor() {
@@ -767,42 +820,41 @@ export namespace TsGenAspnetExample.Controllers {
             };
         }
         /** without remark */
-        static Hello(): Promise<null | string> {
+        Hello(): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"hello"};
             actionInfo.inParameterDefines = [];
-            return TestRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Index(): Promise<null | string> {
+        Index(): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.inParameterDefines = [];
-            return TestRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param name without remark
          */
-        static RootSay(name: null | string): Promise<null | string> {
+        RootSay(name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"rsay/{name=daiwei}"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"name"}];
             actionInfo.inParameterDefines[0].value = name;
-            return TestRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param name without remark
          */
-        static Say(name: null | string): Promise<null | string> {
+        Say(name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.routeDefine = {"RouteContent":"say/{name=daiwei}"};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"name"}];
             actionInfo.inParameterDefines[0].value = name;
-            return TestRoutePrefixController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class NoAnyAttrWebapiController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new NoAnyAttrWebapiController();
 
         /** define the constructor of NoAnyAttrWebapiController */
         constructor() {
@@ -817,79 +869,78 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param id without remark
          */
-        static Delete(id: number): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+        Delete(id: number): Promise<Entitys.Null_Or_PersonInTsGenAspnetExampleModels> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpDelete":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static get(): Promise<null | Entitys.TsGenAspnetExample.Models.Manager[]> {
+        get(): Promise<Array<Entitys.TsGenAspnetExample.Models.Manager>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          */
-        static Get(id: number): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+        Get(id: number): Promise<Entitys.Null_Or_PersonInTsGenAspnetExampleModels> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Options(): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+        Options(): Promise<Entitys.Null_Or_PersonInTsGenAspnetExampleModels> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpOptions":true};
             actionInfo.inParameterDefines = [];
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param value without remark
          */
         // tslint:disable-next-line:max-line-length
-        static Patch(id: number,value: null | Entitys.TsGenAspnetExample.Models.Person): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+        Patch(id: number,value: Entitys.Null_Or_PersonInTsGenAspnetExampleModels): Promise<Entitys.Null_Or_PersonInTsGenAspnetExampleModels> {
 
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPatch":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = value;
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param value without remark
          */
-        static Post(value: null | Entitys.TsGenAspnetExample.Models.Person): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+        Post(value: Entitys.Null_Or_PersonInTsGenAspnetExampleModels): Promise<Entitys.Null_Or_PersonInTsGenAspnetExampleModels> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = value;
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param value without remark
          */
         // tslint:disable-next-line:max-line-length
-        static Put(id: number,value: null | Entitys.TsGenAspnetExample.Models.Person): Promise<null | Entitys.TsGenAspnetExample.Models.Person> {
+        Put(id: number,value: Entitys.Null_Or_PersonInTsGenAspnetExampleModels): Promise<Entitys.Null_Or_PersonInTsGenAspnetExampleModels> {
 
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPut":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = value;
-            return NoAnyAttrWebapiController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class TestAreaTestPrefixValuesController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestAreaTestPrefixValuesController();
 
         /** define the constructor of TestAreaTestPrefixValuesController */
         constructor() {
@@ -904,56 +955,55 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param id without remark
          */
-        static Delete(id: number): Promise<Entitys.System.Void> {
+        Delete(id: number): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpDelete":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Get(): Promise<null | string[]> {
+        Get(): Promise<Array<Entitys.Null_Or_String>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
-            return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          */
-        static GetById(id: number): Promise<null | string> {
+        GetById(id: number): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param value without remark
          */
-        static Post(value: null | string): Promise<Entitys.System.Void> {
+        Post(value: Entitys.Null_Or_String): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = value;
-            return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param value without remark
          */
-        static Put(id: number,value: null | string): Promise<Entitys.System.Void> {
+        Put(id: number,value: Entitys.Null_Or_String): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPut":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = value;
-            return TestAreaTestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class TestPrefixValuesController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestPrefixValuesController();
 
         /** define the constructor of TestPrefixValuesController */
         constructor() {
@@ -968,56 +1018,55 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param id without remark
          */
-        static Delete(id: number): Promise<Entitys.System.Void> {
+        Delete(id: number): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpDelete":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return TestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Get(): Promise<null | string[]> {
+        Get(): Promise<Array<Entitys.Null_Or_String>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
-            return TestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          */
-        static GetById(id: number): Promise<null | string> {
+        GetById(id: number): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return TestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param value without remark
          */
-        static Post(value: null | string): Promise<Entitys.System.Void> {
+        Post(value: Entitys.Null_Or_String): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = value;
-            return TestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param value without remark
          */
-        static Put(id: number,value: null | string): Promise<Entitys.System.Void> {
+        Put(id: number,value: Entitys.Null_Or_String): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPut":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = value;
-            return TestPrefixValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class NoRouteValuesController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new NoRouteValuesController();
 
         /** define the constructor of NoRouteValuesController */
         constructor() {
@@ -1032,39 +1081,38 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param id without remark
          */
-        static Get(id: number): Promise<null | string> {
+        Get(id: number): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return NoRouteValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          */
-        static Test(lang: null | string): Promise<null | string> {
+        Test(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = lang;
-            return NoRouteValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param lang without remark
          */
-        static TestByIdLang(id: number,lang: null | string): Promise<null | string> {
+        TestByIdLang(id: number,lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = lang;
-            return NoRouteValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class ValuesController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new ValuesController();
 
         /** define the constructor of ValuesController */
         constructor() {
@@ -1079,39 +1127,38 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param id without remark
          */
-        static Get(id: number): Promise<null | string[]> {
+        Get(id: number): Promise<Array<Entitys.Null_Or_String>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return ValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param lang without remark
          */
-        static Test(lang: null | string): Promise<Record<string,null | Entitys.TsGenAspnetExample.Models.Person>> {
+        Test(lang: Entitys.Null_Or_String): Promise<Record<string,Entitys.TsGenAspnetExample.Models.Person>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = lang;
-            return ValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param lang without remark
          */
-        static TestByIdLang(id: number,lang: null | string): Promise<null | string> {
+        TestByIdLang(id: number,lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{},"name":"lang"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = lang;
-            return ValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    // tslint:disable-next-line:class-name
     export class TestAreaValuesController extends Hongbo.HongboRootControl {
-        /** define a static instance of Constructor */
-        public static Instance = new TestAreaValuesController();
 
         /** define the constructor of TestAreaValuesController */
         constructor() {
@@ -1126,51 +1173,93 @@ export namespace TsGenAspnetExample.Controllers {
         /** without remark
          *   @param id without remark
          */
-        static Delete(id: number): Promise<Entitys.System.Void> {
+        Delete(id: number): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpDelete":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return TestAreaValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark */
-        static Get(): Promise<null | string[]> {
+        Get(): Promise<Array<Entitys.Null_Or_String>> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [];
-            return TestAreaValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          */
-        static GetById(id: number): Promise<null | string> {
+        GetById(id: number): Promise<Entitys.Null_Or_String> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpGet":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"}];
             actionInfo.inParameterDefines[0].value = id;
-            return TestAreaValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param value without remark
          */
-        static Post(value: null | string): Promise<Entitys.System.Void> {
+        Post(value: Entitys.Null_Or_String): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPost":true};
             actionInfo.inParameterDefines = [{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = value;
-            return TestAreaValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
         /** without remark
          *   @param id without remark
          *   @param value without remark
          */
-        static Put(id: number,value: null | string): Promise<Entitys.System.Void> {
+        Put(id: number,value: Entitys.Null_Or_String): Promise<Entitys.System.Void> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
             actionInfo.httpMethod = {"IsHttpPut":true};
             actionInfo.inParameterDefines = [{"fromDefine":{},"name":"id"},{"fromDefine":{"IsFromBody":true},"name":"value"}];
             actionInfo.inParameterDefines[0].value = id;
             actionInfo.inParameterDefines[1].value = value;
-            return TestAreaValuesController.Instance.callAction(actionInfo);
+            return this.callAction(actionInfo);
         }
     }
+    /** define a static instance of HomeController */
+    export const HomeInstance: HomeController = new HomeController();
+
+    /** define a static instance of TestRouteController */
+    // tslint:disable-next-line:max-line-length
+    export const TestRouteInstance: TestRouteController = new TestRouteController();
+
+    /** define a static instance of TestRouteAreaAndRoutePrefixController */
+    // tslint:disable-next-line:max-line-length
+    export const TestRouteAreaAndRoutePrefixInstance: TestRouteAreaAndRoutePrefixController = new TestRouteAreaAndRoutePrefixController();
+
+    /** define a static instance of TestRouteAreaController */
+    // tslint:disable-next-line:max-line-length
+    export const TestRouteAreaInstance: TestRouteAreaController = new TestRouteAreaController();
+
+    /** define a static instance of TestRoutePrefixController */
+    // tslint:disable-next-line:max-line-length
+    export const TestRoutePrefixInstance: TestRoutePrefixController = new TestRoutePrefixController();
+
+    /** define a static instance of NoAnyAttrWebapiController */
+    // tslint:disable-next-line:max-line-length
+    export const NoAnyAttrWebapiInstance: NoAnyAttrWebapiController = new NoAnyAttrWebapiController();
+
+    /** define a static instance of TestAreaTestPrefixValuesController */
+    // tslint:disable-next-line:max-line-length
+    export const TestAreaTestPrefixValuesInstance: TestAreaTestPrefixValuesController = new TestAreaTestPrefixValuesController();
+
+    /** define a static instance of TestPrefixValuesController */
+    // tslint:disable-next-line:max-line-length
+    export const TestPrefixValuesInstance: TestPrefixValuesController = new TestPrefixValuesController();
+
+    /** define a static instance of NoRouteValuesController */
+    // tslint:disable-next-line:max-line-length
+    export const NoRouteValuesInstance: NoRouteValuesController = new NoRouteValuesController();
+
+    /** define a static instance of ValuesController */
+    export const ValuesInstance: ValuesController = new ValuesController();
+
+    /** define a static instance of TestAreaValuesController */
+    // tslint:disable-next-line:max-line-length
+    export const TestAreaValuesInstance: TestAreaValuesController = new TestAreaValuesController();
+
 }
