@@ -565,7 +565,7 @@ Hongbo.HongboRootControl.DefaulWebapitRoute = "api/{controller}/{id?}";
 Hongbo.HongboRootControl.DefaulMvctRoute = "{controller}/{action}/{id?}";
 export namespace TsGenAspnetExample.Controllers {
     // tslint:disable-next-line:class-name
-    export abstract class AbstractGenericDbContextController<TDbContext> extends Hongbo.HongboRootControl {
+    export abstract class AbstractGenericDbContextController_1<TDbContext> extends Hongbo.HongboRootControl {
 
         /** define the constructor of AbstractGenericDbContextController`1 */
         constructor() {
@@ -585,7 +585,7 @@ export namespace TsGenAspnetExample.Controllers {
         }
     }
     // tslint:disable-next-line:class-name
-    export class HomeController extends AbstractGenericDbContextController<object> {
+    export class HomeController extends AbstractGenericDbContextController_1<object> {
 
         /** define the constructor of HomeController */
         constructor() {
