@@ -1,4 +1,7 @@
 # auto_gen
+This project is used to demostrate how to use the TypeScript which exported by <https://github.com/yanqingmao/NetAutoTsExport>.  
+You need clone the <https://github.com/yanqingma/NetAutoTsExport_AspNetExample> and run it on your localhost.  
+Then you can run the followed command.  
 
 ## Project setup
 ```
