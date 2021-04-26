@@ -161,5 +161,6 @@ uni-button {
 }
 h6 {
   color: red;
+  font-size: 36rpx;
 }
 </style>
