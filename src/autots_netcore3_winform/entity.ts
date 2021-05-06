@@ -74,7 +74,7 @@ export namespace Hongbo.Ef {
         constructor() {
             super();
             // typePropertyHolder: Hongbo.Ef -- Hongbo.Ef -- IdAndGuidEntity -- Guid
-            this.guid = "d5b1a28629474538b75d02e8174f52ee";
+            this.guid = "86c34646be40475a826bd72b519fd428";
             this.hbTypename = "Hongbo.Ef.IdAndGuidEntity";
         }
     }
@@ -89,7 +89,7 @@ export namespace Hongbo.Ef {
             this.createDateTime = new Date();
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndCreateDatetimeEntity";
             // override parent class default value
-            this.guid = "ba4a017ac3b3468ea0bfab7c9882902d";
+            this.guid = "9153b12bca484e7596bcfc3f33f1ebb2";
         }
     }
     /** Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity  */
@@ -103,7 +103,7 @@ export namespace Hongbo.Ef {
             this.lastModifyDateTime = new Date();
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity";
             // override parent class default value
-            this.guid = "cfd346a11ddd4cd0b43233f43a3b8a62";
+            this.guid = "5f62e2620a14429fa2e52fe8d30a4c78";
         }
     }
     /** Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity  */
@@ -117,7 +117,7 @@ export namespace Hongbo.Ef {
             this.name = "";
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity";
             // override parent class default value
-            this.guid = "7e05f2a28ade4c14b265441ed74f7bb0";
+            this.guid = "788263e72b6548f8a257b56e19e484ea";
         }
     }
 }
@@ -239,7 +239,7 @@ export namespace TsGenCoreExample.Models {
             this.hbTypename = "TsGenCoreExample.Models.Cat";
             // override parent class default value
             this.animalType = EnumAnimalType.Cat;
-            this.guid = "2d7b11e872424fc9b420b344ec6c35b8";
+            this.guid = "792dfcda2f364fc6a4380f31c9de3abb";
         }
     }
     /** TsGenCoreExample.Models.EntityWithType  */
@@ -262,7 +262,7 @@ export namespace TsGenCoreExample.Models {
             this.catchMouseCount = 0;
             this.hbTypename = "TsGenCoreExample.Models.Dog";
             // override parent class default value
-            this.guid = "ad829013f3fc41feaec9285be331723f";
+            this.guid = "dc243b5e206c4951beb320a1e80e6bce";
         }
     }
     /** TsGenCoreExample.Models.GenericWorkFlow`2  */
