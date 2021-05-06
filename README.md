@@ -10,7 +10,6 @@ Then you can run the followed command start the vue project.
 默认下 NetAutoTsExport_AspNetExample 项目的 RootUrl 是 http://localhost/NetAutoTsExport_AspNetExample  
 然后运行如下的命令，启动客户端的 Vue 项目。  
 
-
 ## Project setup
 
 ```nodejs
