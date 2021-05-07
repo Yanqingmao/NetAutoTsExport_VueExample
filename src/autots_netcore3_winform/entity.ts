@@ -1,5 +1,5 @@
 ﻿// attention, no license/license expired, will limit 20 Controller and 100 Actions.
-// please access the https://www.max-media.cc/e/tsuitapply/create apply the license.
+// please access the https://www.max-media.cc/e/tssuitapply/create apply the license or contact dear.yanqingmao@hotmail.com to extend the license.
 export type Null_Or_<TElement> =  null | TElement;
 export type Null_Or_ArrayGeneral<TElement> =  Null_Or_<Array<TElement>>;
 export type Null_Or_String = null | string;
@@ -74,7 +74,7 @@ export namespace Hongbo.Ef {
         constructor() {
             super();
             // typePropertyHolder: Hongbo.Ef -- Hongbo.Ef -- IdAndGuidEntity -- Guid
-            this.guid = "86c34646be40475a826bd72b519fd428";
+            this.guid = "97066e404cf343b29762ec164b06f8e4";
             this.hbTypename = "Hongbo.Ef.IdAndGuidEntity";
         }
     }
@@ -89,7 +89,7 @@ export namespace Hongbo.Ef {
             this.createDateTime = new Date();
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndCreateDatetimeEntity";
             // override parent class default value
-            this.guid = "9153b12bca484e7596bcfc3f33f1ebb2";
+            this.guid = "08bc115cb07f4fc1be6f73d7d6b95367";
         }
     }
     /** Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity  */
@@ -103,7 +103,7 @@ export namespace Hongbo.Ef {
             this.lastModifyDateTime = new Date();
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity";
             // override parent class default value
-            this.guid = "5f62e2620a14429fa2e52fe8d30a4c78";
+            this.guid = "d26a4664c201458aace801059e87ea3c";
         }
     }
     /** Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity  */
@@ -117,7 +117,7 @@ export namespace Hongbo.Ef {
             this.name = "";
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity";
             // override parent class default value
-            this.guid = "788263e72b6548f8a257b56e19e484ea";
+            this.guid = "45657a799b3548b48cd3b9e91986d792";
         }
     }
 }
@@ -239,7 +239,7 @@ export namespace TsGenCoreExample.Models {
             this.hbTypename = "TsGenCoreExample.Models.Cat";
             // override parent class default value
             this.animalType = EnumAnimalType.Cat;
-            this.guid = "792dfcda2f364fc6a4380f31c9de3abb";
+            this.guid = "c93daaaec5e040b6bae9f09dc5259ab0";
         }
     }
     /** TsGenCoreExample.Models.EntityWithType  */
@@ -262,7 +262,7 @@ export namespace TsGenCoreExample.Models {
             this.catchMouseCount = 0;
             this.hbTypename = "TsGenCoreExample.Models.Dog";
             // override parent class default value
-            this.guid = "dc243b5e206c4951beb320a1e80e6bce";
+            this.guid = "47f3047281754d36a11f66385e62eebb";
         }
     }
     /** TsGenCoreExample.Models.GenericWorkFlow`2  */

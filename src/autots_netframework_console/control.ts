@@ -1,5 +1,5 @@
 ﻿// attention, no license/license expired, will limit 20 Controller and 100 Actions.
-// please access the https://www.max-media.cc/e/tsuitapply/create apply the license.
+// please access the https://www.max-media.cc/e/tssuitapply/create apply the license or contact dear.yanqingmao@hotmail.com to extend the license.
 import * as Entitys from "./entity";
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 
@@ -437,7 +437,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.HomeController.Index
+        /** the  with AlwaysIgnoreAttribute,
          *   @param dbContext dbContext
          */
         Index(): Promise<Entitys.Null_Or_DogInTsGenAspnetExampleModels> {
@@ -445,8 +445,9 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.HomeController.OrderHandle
+        /** the  with AlwaysIgnoreAttribute,
          *   @param dbContext dbContext
+         *   @returns JsonResult will converted to any type
          */
         OrderHandle(): Promise<Entitys.Null_Or_WechatOrderInTsGenAspnetExampleModels> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
@@ -461,8 +462,9 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.HomeController.Welcome
+        /** the  with AlwaysIgnoreAttribute,
          *   @param dbContext dbContext
+         *   @returns JsonResult will converted to any type
          */
         Welcome(): Promise<any> {
             let actionInfo: Hongbo.HongboRootAction = new Hongbo.HongboRootAction();
@@ -497,7 +499,7 @@ export namespace TsGenAspnetExample.Controllers {
                 routeDefine: {"RouteAreaContent":"{lang=zh-CN}/ra"}
             };
         }
-        /** TsGenAspnetExample.Controllers.TestRouteAreaAndRoutePrefixController.Hello
+        /** 可以通过 /abc/ra/rp/hello 或者 /xyz/ra/rp/Hello 访问
          *   @param lang lang
          */
         Hello(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
@@ -513,7 +515,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRouteAreaAndRoutePrefixController.Say
+        /** 可以通过 /abc/ra/rp/hello/name 或者 /xyz/ra/rp/Hello/dawei 访问
          *   @param lang lang
          *   @param name name
          */
@@ -525,7 +527,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines[1].value = name;
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRouteAreaAndRoutePrefixController.World
+        /** 通过 /abc/ra/rp/h 无法访问
          *   @param lang lang
          */
         World(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
@@ -549,7 +551,7 @@ export namespace TsGenAspnetExample.Controllers {
                 routeDefine: {"RouteAreaContent":"{lang=zh-CN}/ra"}
             };
         }
-        /** TsGenAspnetExample.Controllers.TestRouteAreaController.Hello
+        /** 可以通过 /abc/ra/hello 或者 /xyz/ra/Hello 访问
          *   @param lang lang
          */
         Hello(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
@@ -565,7 +567,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRouteAreaController.RootSay
+        /** 可以通过 /abc/ra/hello/name 或者 /xyz/ra/Hello/dawei 访问
          *   @param lang lang
          *   @param name name
          */
@@ -577,7 +579,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines[1].value = name;
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRouteAreaController.Say
+        /** 可以通过 /abc/ra/hello/name 或者 /xyz/ra/Hello/dawei 访问
          *   @param lang lang
          *   @param name name
          */
@@ -609,7 +611,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRouteController.Hello
+        /** 可以通过 /hello
          *   @param lang lang
          */
         Hello(lang: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
@@ -625,7 +627,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRouteController.RootSay
+        /** 可以通过 /abc/ra/rp/hello/name 或者 /xyz/ra/rp/Hello/dawei 访问
          *   @param lang lang
          *   @param name name
          */
@@ -664,7 +666,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines = [];
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRoutePrefixController.RootSay
+        /** 可以通过 /rp/say 或者 /rp/say/xxx 访问
          *   @param name name
          */
         RootSay(name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {
@@ -674,7 +676,7 @@ export namespace TsGenAspnetExample.Controllers {
             actionInfo.inParameterDefines[0].value = name;
             return this.callAction(actionInfo);
         }
-        /** TsGenAspnetExample.Controllers.TestRoutePrefixController.Say
+        /** 可以通过 /rp/say 或者 /rp/say/xxx 访问
          *   @param name name
          */
         Say(name: Entitys.Null_Or_String): Promise<Entitys.Null_Or_String> {

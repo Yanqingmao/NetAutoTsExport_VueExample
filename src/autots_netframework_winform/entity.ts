@@ -1,5 +1,5 @@
 ﻿// attention, no license/license expired, will limit 20 Controller and 100 Actions.
-// please access the https://www.max-media.cc/e/tsuitapply/create apply the license.
+// please access the https://www.max-media.cc/e/tssuitapply/create apply the license or contact dear.yanqingmao@hotmail.com to extend the license.
 export type Null_Or_<TElement> =  null | TElement;
 export type Null_Or_ArrayGeneral<TElement> =  Null_Or_<Array<TElement>>;
 export type Null_Or_String = null | string;
@@ -388,17 +388,17 @@ export namespace TsGenAspnetExample.Models {
             this.hbTypename = "TsGenAspnetExample.Models.EntityWithType";
         }
     }
-    /** TsGenAspnetExample.Models.Dog  */
+    /** this action has a JsonResultType(typeof(Dog))],  */
     export class Dog extends Animal implements IName {
-        /** TsGenAspnetExample.Models.Dog  */
+        /** this action has a JsonResultType(typeof(Dog))],  */
         constructor() {
             super();
             this.hbTypename = "TsGenAspnetExample.Models.Dog";
         }
     }
-    /** TsGenAspnetExample.Models.WechatOrder  */
+    /** 微信订单定义  */
     export class WechatOrder {
-        /** IName  */
+        /** 接口  */
         createUser: Null_Or_INameInTsGenAspnetExampleModels;
         /** EnumOrderState  */
         currentState: EnumOrderState;
@@ -410,7 +410,7 @@ export namespace TsGenAspnetExample.Models {
         result: CheckResult;
         /** typename property */
         hbTypename?: string;
-        /** TsGenAspnetExample.Models.WechatOrder  */
+        /** 微信订单定义  */
         constructor() {
             // typePropertyHolder: TsGenAspnetExample -- TsGenAspnetExample.Models -- WechatOrder -- CreateUser
             this.createUser =  {} as any;
@@ -438,13 +438,13 @@ export namespace TsGenAspnetExample.Models {
         /** Failure  */
         Failure = 4,
     }
-    /** TsGenAspnetExample.Models.CheckResult  */
+    /** 对数据进行检查的结果  */
     export class CheckResult extends System.ValueType {
-        /** String  */
+        /** 错误原因  */
         errorReason: Null_Or_String;
-        /** Boolean  */
+        /** 是否存在错误  */
         hasError: boolean;
-        /** TsGenAspnetExample.Models.CheckResult  */
+        /** 对数据进行检查的结果  */
         constructor() {
             super();
             // typePropertyHolder: TsGenAspnetExample -- TsGenAspnetExample.Models -- CheckResult -- ErrorReason
@@ -454,7 +454,7 @@ export namespace TsGenAspnetExample.Models {
             this.hbTypename = "TsGenAspnetExample.Models.CheckResult";
         }
     }
-    /** TsGenAspnetExample.Models.IName  */
+    /** 命名接口  */
     // tslint:disable-next-line:interface-name & class-name
     export interface IName {
         /** String  */
@@ -495,17 +495,17 @@ export namespace TsGenAspnetExample.Models {
             this.upper = null;
         }
     }
-    /** TsGenAspnetExample.Models.GenericWorkFlow`2  */
+    /** 泛型工作流类定义  */
     export class GenericWorkFlow<TEntity,TState> {
-        /** TState  */
+        /** 当前状态  */
         current: TState;
-        /** TEntity  */
+        /** 实体实例  */
         entityInstance: TEntity;
-        /** TState  */
+        /** 下一个状态  */
         next: TState;
         /** typename property */
         hbTypename?: string;
-        /** TsGenAspnetExample.Models.GenericWorkFlow`2  */
+        /** 泛型工作流类定义  */
         constructor() {
             // typePropertyHolder: TsGenAspnetExample -- TsGenAspnetExample.Models -- GenericWorkFlow`2 -- Current
             this.current = {} as any;
