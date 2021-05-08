@@ -1,5 +1,6 @@
 ﻿// attention, no license/license expired, will limit 20 Controller and 100 Actions.
-// please access the https://www.max-media.cc/e/tssuitapply/create apply the license or contact dear.yanqingmao@hotmail.com to extend the license.
+// please access the https://www.max-media.cc/e/tssuitapply/create apply the license
+// or contact dear.yanqingmao@hotmail.com to extend the license.
 import * as Entitys from "./entity";
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 

@@ -1,5 +1,6 @@
 ﻿// attention, no license/license expired, will limit 20 Controller and 100 Actions.
-// please access the https://www.max-media.cc/e/tssuitapply/create apply the license or contact dear.yanqingmao@hotmail.com to extend the license.
+// please access the https://www.max-media.cc/e/tssuitapply/create apply the license
+// or contact dear.yanqingmao@hotmail.com to extend the license.
 export type Null_Or_<TElement> =  null | TElement;
 export type Null_Or_ArrayGeneral<TElement> =  Null_Or_<Array<TElement>>;
 export type Null_Or_String = null | string;
@@ -44,9 +45,9 @@ export namespace Hongbo.Basic.Systems {
         /** Hongbo.Basic.Systems.CheckResult  */
         constructor() {
             super();
-            // : Hongbo.Basic -- Hongbo.Basic.Systems -- CheckResult -- ErrorReason
+            // : Hongbo.Basic -- Hongbo.Basic.Systems -- CheckResult -- ErrorReason
             this.errorReason = "";
-            // : Hongbo.Basic -- Hongbo.Basic.Systems -- CheckResult -- HasError
+            // : Hongbo.Basic -- Hongbo.Basic.Systems -- CheckResult -- HasError
             this.hasError = false;
             this.hbTypename = "Hongbo.Basic.Systems.CheckResult";
         }
@@ -61,7 +62,7 @@ export namespace Hongbo.Ef {
         hbTypename?: string;
         /** Hongbo.Ef.IdEntity  */
         constructor() {
-            // : Hongbo.Ef -- Hongbo.Ef -- IdEntity -- Id
+            // : Hongbo.Ef -- Hongbo.Ef -- IdEntity -- Id
             this.id = 0;
             this.hbTypename = "Hongbo.Ef.IdEntity";
         }
@@ -73,8 +74,8 @@ export namespace Hongbo.Ef {
         /** Hongbo.Ef.IdAndGuidEntity  */
         constructor() {
             super();
-            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidEntity -- Guid
-            this.guid = "23d9d436e58b44939720d620dea8ccf3";
+            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidEntity -- Guid
+            this.guid = "56f4f3f94afe492a8fa92db3acbf4b74";
             this.hbTypename = "Hongbo.Ef.IdAndGuidEntity";
         }
     }
@@ -85,11 +86,11 @@ export namespace Hongbo.Ef {
         /** Hongbo.Ef.IdAndGuidAndCreateDatetimeEntity  */
         constructor() {
             super();
-            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidAndCreateDatetimeEntity -- CreateDateTime
+            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidAndCreateDatetimeEntity -- CreateDateTime
             this.createDateTime = new Date();
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndCreateDatetimeEntity";
             // override parent class default value
-            this.guid = "8cf63594babf43b481128aaee647c593";
+            this.guid = "acdd21745e744df29be03cd7552fec24";
         }
     }
     /** Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity  */
@@ -99,11 +100,11 @@ export namespace Hongbo.Ef {
         /** Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity  */
         constructor() {
             super();
-            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity -- LastModifyDateTime
+            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity -- LastModifyDateTime
             this.lastModifyDateTime = new Date();
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndCreateDatetimeAndModifyDatetimeEntity";
             // override parent class default value
-            this.guid = "f3421963977b4e4f9e73a405388d751a";
+            this.guid = "74b145ba574347c993cde625e236beee";
         }
     }
     /** Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity  */
@@ -113,11 +114,11 @@ export namespace Hongbo.Ef {
         /** Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity  */
         constructor() {
             super();
-            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity -- Name
+            // : Hongbo.Ef -- Hongbo.Ef -- IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity -- Name
             this.name = "";
             this.hbTypename = "Hongbo.Ef.IdAndGuidAndNameAndCreateDatetimeAndModifyDatetimeEntity";
             // override parent class default value
-            this.guid = "dcea72db07ee4dcaadcb1631e2dee826";
+            this.guid = "d33dd9ec974d47aa9ddac9d7e571200e";
         }
     }
 }
@@ -134,11 +135,11 @@ export namespace TsGenCoreExample.Models {
         hbTypename?: string;
         /** TsGenCoreExample.Models.Person  */
         constructor() {
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Person -- Age
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Person -- Age
             this.age = 0;
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Person -- Name
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Person -- Name
             this.name = "";
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Person -- Upper
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Person -- Upper
             this.upper = null;
             this.hbTypename = "TsGenCoreExample.Models.Person";
         }
@@ -150,7 +151,7 @@ export namespace TsGenCoreExample.Models {
         /** TsGenCoreExample.Models.Manager  */
         constructor() {
             super();
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Manager -- Live
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Manager -- Live
             this.live = null;
             this.hbTypename = "TsGenCoreExample.Models.Manager";
             // override parent class default value
@@ -167,9 +168,9 @@ export namespace TsGenCoreExample.Models {
         hbTypename?: string;
         /** TsGenCoreExample.Models.House  */
         constructor() {
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- House -- Address
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- House -- Address
             this.address = "";
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- House -- LiveManager
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- House -- LiveManager
             this.liveManager = null;
             this.hbTypename = "TsGenCoreExample.Models.House";
         }
@@ -188,11 +189,11 @@ export namespace TsGenCoreExample.Models {
         hbTypename?: string;
         /** TsGenCoreExample.Models.ErrorViewModel  */
         constructor() {
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- ErrorViewModel -- Code
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- ErrorViewModel -- Code
             this.code = EnumCode.Success;
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- ErrorViewModel -- RequestId
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- ErrorViewModel -- RequestId
             this.requestId = "";
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- ErrorViewModel -- ShowRequestId
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- ErrorViewModel -- ShowRequestId
             this.showRequestId = false;
             this.hbTypename = "TsGenCoreExample.Models.ErrorViewModel";
         }
@@ -213,9 +214,9 @@ export namespace TsGenCoreExample.Models {
         /** TsGenCoreExample.Models.Animal  */
         constructor() {
             super();
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Animal -- AnimalType
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Animal -- AnimalType
             this.animalType = EnumAnimalType.Dog;
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Animal -- Name
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Animal -- Name
             this.name = "";
             this.hbTypename = "TsGenCoreExample.Models.Animal";
         }
@@ -236,12 +237,12 @@ export namespace TsGenCoreExample.Models {
         /** TsGenCoreExample.Models.Cat  */
         constructor() {
             super();
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Cat -- CatchMouseCount
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Cat -- CatchMouseCount
             this.catchMouseCount = 0;
             this.hbTypename = "TsGenCoreExample.Models.Cat";
             // override parent class default value
             this.animalType = EnumAnimalType.Cat;
-            this.guid = "312a173386bb44339ec91e6fd0a15f7f";
+            this.guid = "25e419bc650b42c4a3adcc2a32b22dd4";
         }
     }
     /** TsGenCoreExample.Models.EntityWithType  */
@@ -260,11 +261,11 @@ export namespace TsGenCoreExample.Models {
         /** TsGenCoreExample.Models.Dog  */
         constructor() {
             super();
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- Dog -- CatchMouseCount
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- Dog -- CatchMouseCount
             this.catchMouseCount = 0;
             this.hbTypename = "TsGenCoreExample.Models.Dog";
             // override parent class default value
-            this.guid = "2ab403b0ae3345b3a3cf09e2797ea6d1";
+            this.guid = "1ea7a5e05a784454a85eda85df0a389a";
         }
     }
     /** TsGenCoreExample.Models.GenericWorkFlow`2  */
@@ -277,9 +278,9 @@ export namespace TsGenCoreExample.Models {
         hbTypename?: string;
         /** TsGenCoreExample.Models.GenericWorkFlow`2  */
         constructor() {
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- GenericWorkFlow`2 -- Current
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- GenericWorkFlow`2 -- Current
             this.current = {} as any;
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- GenericWorkFlow`2 -- Next
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- GenericWorkFlow`2 -- Next
             this.next = {} as any;
             this.hbTypename = "TsGenCoreExample.Models.GenericWorkFlow`2";
         }
@@ -292,7 +293,7 @@ export namespace TsGenCoreExample.Models {
         hbTypename?: string;
         /** TsGenCoreExample.Models.GenericJsonResponses`1  */
         constructor() {
-            // : TsGenCoreExample -- TsGenCoreExample.Models -- GenericJsonResponses`1 -- Data
+            // : TsGenCoreExample -- TsGenCoreExample.Models -- GenericJsonResponses`1 -- Data
             this.data = {} as any;
             this.hbTypename = "TsGenCoreExample.Models.GenericJsonResponses`1";
         }
